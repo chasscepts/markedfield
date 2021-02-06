@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "directory-tree": "^2.2.6",
+    "highlight.js": "^10.5.0",
     "marked": "^1.2.9"
   }
 }

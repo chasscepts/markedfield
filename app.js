@@ -2,9 +2,26 @@ const fs = require('fs');
 const path = require('path');
 const { dialog, Menu } = require('electron').remote;
 const markdown = require('marked');
+const hljs = require('highlight.js');
 const preferences = require('./user-preferences');
 const dirTree = require('directory-tree');
+const cssLoader = require('./css-loader');
 const logger = require('./logger');
+
+markdown.setOptions({
+  renderer: new markdown.Renderer(),
+  highlight: function(code, language) {
+    const validLanguage = hljs.getLanguage(language) ? language : 'plaintext';
+    return hljs.highlight(validLanguage, code).value;
+  },
+  pedantic: false,
+  gfm: true,
+  breaks: false,
+  sanitize: false,
+  smartLists: true,
+  smartypants: false,
+  xhtml: false
+});
 
 (function(){
   let editor, display, fileBrowser, isFileBrowserOpen = false;
@@ -16,12 +33,18 @@ const logger = require('./logger');
     display = document.querySelector('#display');
     fileBrowser = document.querySelector('#file-browser');
 
+    loadcss();
     setupDragging();
     setupKeyBindings();
     setupEditor();
     setupFileBrowser();
     setupWorkspace();
     setupMenu();
+
+  }
+
+  const loadcss = () => {
+    cssLoader.load('highlight.js/styles/github.css');
   }
 
   const setupDragging = () => {
