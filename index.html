@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Markdown Field</title>
+  <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+  <link type="text/css" rel="stylesheet" href="app.css">
+</head>
+<body>
+  <div id="wrap">
+    <header>
+      <button class="hamburger" id="aside-open-btn">
+        <span></span>
+      </button>
+    </header>
+    <main>
+      <div id="editor-wrap">
+        <textarea id="editor" placeholder="Enter Markdown"></textarea>
+      </div>
+      <div id="resizer"></div>
+      <div id="display">
+  
+      </div>
+    </main>
+    <aside id="file-browser">
+      <div>
+        <div class="header">
+          <button class="hamburger close" id="aside-close-btn"></button>
+        </div>
+        <div class="body" id="file-browser-body">
+          
+        </div>
+      </div>
+    </aside>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
