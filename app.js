@@ -2,8 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { dialog, Menu } = require('electron').remote;
 const markdown = require('marked');
-const appConfig = require('./app.config');
-const editorConfig = require('./editor.config');
+const preferences = require('./user-preferences');
 const dirTree = require('directory-tree');
 const logger = require('./logger');
 
@@ -98,8 +97,8 @@ const logger = require('./logger');
   }
 
   const setupWorkspace = () => {
-    if(appConfig.dir){
-      openFolder(appConfig.dir, false);
+    if(preferences.currentDirectory){
+      openFolder(preferences.currentDirectory, false);
       openFileBrowser();
     }
   }
@@ -229,11 +228,11 @@ const logger = require('./logger');
   }
 
   const createNew = () => {
-    let file = dialog.showSaveDialogSync(null, {defaultPath: appConfig.dir, filters: [{name: 'Markdown', extensions: ['md']}]});
+    let file = dialog.showSaveDialogSync(null, {defaultPath: preferences.currentDirectory, filters: [{name: 'Markdown', extensions: ['md']}]});
     if(!file) return;
     let { dir } = path.parse(file);
-    appConfig.dir = dir;
-    appConfig.file = file;
+    preferences.currentDirectory = dir;
+    preferences.currentFile = file;
     editor.value = '';
     refreshDisplay();
     if(save()){
@@ -242,7 +241,7 @@ const logger = require('./logger');
   }
 
   const openWorkSpace = () => {
-    let folder = dialog.showOpenDialogSync(null, { defaultPath: appConfig.dir, properties: ['openDirectory'] });
+    let folder = dialog.showOpenDialogSync(null, { defaultPath: preferences.currentDirectory, properties: ['openDirectory'] });
     if(!folder) return;
     folder = folder[0];
     openFolder(folder);
@@ -252,19 +251,19 @@ const logger = require('./logger');
     const tree = dirTree(dir, fileFilter);
     addFileTreeBranch(tree);
     if(save){
-      appConfig.dir = dir;
-      appConfig.save();
+      preferences.currentDirectory = dir;
+      preferences.save();
     }
   }
 
   const save = () => {
-    if(!appConfig.file){
+    if(!preferences.currentFile){
       saveAs();
       return;
     }
     let content = document.querySelector('#editor').value || '';
     try{
-      fs.writeFileSync(appConfig.file, content);
+      fs.writeFileSync(preferences.currentFile, content);
       return true;
     }
     catch(err){
@@ -275,19 +274,19 @@ const logger = require('./logger');
   }
 
   const saveAs = () => {
-    let file = dialog.showSaveDialogSync(null, {defaultPath: appConfig.dir, filters: [{name: 'Markdown', extensions: ['md']}]});
+    let file = dialog.showSaveDialogSync(null, {defaultPath: preferences.currentDirectory, filters: [{name: 'Markdown', extensions: ['md']}]});
     if(!file) return;
     let { dir } = path.parse(file);
-    appConfig.dir = dir;
-    appConfig.file = file;
-    appConfig.save();
+    preferences.currentDirectory = dir;
+    preferences.currentFile = file;
+    preferences.save();
     if(save()){
-      openFolder(appConfig.dir, false);
+      openFolder(preferences.currentDirectory, false);
     }
   }
 
   const exportToHtml = () => {
-    const file = dialog.showSaveDialogSync(null, { defaultPath: appConfig.dir, filters: [{name: 'Html', extensions: ['html', 'htm']}] });
+    const file = dialog.showSaveDialogSync(null, { defaultPath: preferences.currentDirectory, filters: [{name: 'Html', extensions: ['html', 'htm']}] });
     if(!file) return;
     const content = display.innerHTML;
     try{
@@ -318,8 +317,8 @@ const logger = require('./logger');
       const content = fs.readFileSync(path);
       editor.value = content;
       refreshDisplay();
-      appConfig.file = path;
-      appConfig.save();
+      preferences.currentFile = path;
+      preferences.save();
     }
     catch(err){
       dialog.showMessageBox(null, { type: 'error', buttons: ['Cancel'], message: 'There was an error reading from the specified path. Pleae check if file still exists.'});
@@ -333,10 +332,10 @@ const logger = require('./logger');
     const end = editor.selectionEnd;
 
     // set textarea value to: text before caret + tab + text after caret
-    editor.value = value.substring(0, start) + editorConfig.tab + value.substring(end);
+    editor.value = value.substring(0, start) + preferences.editorTab + value.substring(end);
 
     // put caret at right position again
-    editor.selectionStart = editor.selectionEnd = start + editorConfig.tab.length;
+    editor.selectionStart = editor.selectionEnd = start + preferences.editorTab.length;
   }
 
   const addFileTreeBranch = (branch, parentNode) => {
@@ -368,7 +367,6 @@ const logger = require('./logger');
       });
       branchPanel.appendChild(panel);
       let height = 0, collapsed = false;
-      console.log(height);
       namePanel.onclick = () => {
         if(!height){
           height = panel.clientHeight + 'px'
