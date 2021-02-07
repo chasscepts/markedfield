@@ -9,13 +9,10 @@ const createConfigFromUserData = () => {
 
   try{
     const userPath = app.getPath('userData');
-    console.log(userPath);
     if(userPath){
       preferencesPath = path.join(userPath, filename);
       if(fs.existsSync(preferencesPath)){
-        console.log(preferencesPath);
         const raw = fs.readFileSync(preferencesPath, 'utf8');
-        console.log(raw);
         const temp = JSON.parse(raw);
         if (typeof temp == "object" && !(temp instanceof Array) && temp != null){
           config = temp

@@ -51,22 +51,23 @@ markdown.setOptions({
     let resizing = false,
       resizer = document.querySelector('#resizer'),
       left = resizer.previousElementSibling,
-      parent = left.parentNode,
       right = resizer.nextElementSibling,
-      leftRect = left.getBoundingClientRect,
-      parentRect = resizer.parentElement.getBoundingClientRect,
       startX = 0,
-      leftWidth = 0;
+      leftWidth = 0,
+      parentWidth = 0;
 
     const down = evt => {
       startX = evt.clientX;
       leftWidth = left.getBoundingClientRect().width;
+      parentWidth = resizer.parentNode.getBoundingClientRect().width;
       resizing = true;
       document.addEventListener('mousemove', move);
       document.addEventListener('mouseup', up);
 
       resizer.style.cursor = 'col-resize';
       document.body.style.cursor = 'col-resize';
+
+      resizer.parentNode.classList.add('resizing');
     }
 
     const up = () => {
@@ -76,12 +77,14 @@ markdown.setOptions({
 
       resizer.style.removeProperty('cursor');
       document.body.style.removeProperty('cursor');
+
+      resizer.parentNode.classList.remove('resizing');
     }
 
     const move = evt => {
       if(!resizing) return;
       const x = evt.clientX;
-      left.style.width = `${ 100 * (leftWidth + (x - startX) + 5) / resizer.parentNode.getBoundingClientRect().width }%`;
+      left.style.width = `${ 100 * ((leftWidth + (x - startX)) / parentWidth) }%`;
     }
     
     resizer.addEventListener('mousedown', down);

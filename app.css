@@ -25,14 +25,19 @@ main{
   height: 100%;
   display: flex;
   flex-flow: row nowrap;
+}
+main.resizing .main-resize-wrap{
+  user-select: none;
+  pointer-events: none;
+}
+.main-resize-wrap{
   padding: 10px;
 }
 #resizer{
   background-color: #cbd5e0;
-  cursor: ew-resize;
   height: 100%;
   width: 2px;
-  margin: 0 3px;
+  cursor: ew-resize;
 }
 
 #editor{
@@ -48,15 +53,20 @@ main{
 }
 #editor-wrap{
   width: 50%;
+  padding-right: 3px;
 }
 #display{
-  flex: 1;
-  height: 100%;
-  overflow: auto;
   padding: 20px;
   border: 1px solid #e8ecef;
   border-radius: 3px;
   background-color: #e9ecf1;
+}
+#display-wrap{
+  flex: 1;
+  height: 100%;
+  padding-left: 3px;
+  height: 100%;
+  overflow: auto;
 }
 
 header{
