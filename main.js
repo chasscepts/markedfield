@@ -10,7 +10,7 @@ function createWindow () {
       enableRemoteModule: true
     }
   })
-
+  win.setIcon(__dirname + '/icons/icon.png');
   win.loadFile('index.html')
 }
 

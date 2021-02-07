@@ -4,7 +4,9 @@
   "description": "An electron GUI wrapper for Marked (https://github.com/markedjs/marked)",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
   "repository": "https://github.com/chasscepts/markedfield",
   "keywords": [
@@ -17,11 +19,46 @@
   "author": "Francis",
   "license": "CC0-1.0",
   "devDependencies": {
+    "@electron-forge/cli": "^6.0.0-beta.54",
+    "@electron-forge/maker-deb": "^6.0.0-beta.54",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.54",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.54",
+    "@electron-forge/maker-zip": "^6.0.0-beta.54",
     "electron": "^11.2.2"
   },
   "dependencies": {
     "directory-tree": "^2.2.6",
+    "electron-squirrel-startup": "^1.0.0",
     "highlight.js": "^10.5.0",
     "marked": "^1.2.9"
+  },
+  "config": {
+    "forge": {
+      "packagerConfig": {
+        "icon": "icons/icon.icon"
+      },
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "markedfield"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {}
+        }
+      ]
+    }
   }
 }
