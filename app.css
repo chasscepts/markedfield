@@ -69,6 +69,15 @@ main.resizing .main-resize-wrap{
   overflow: auto;
 }
 
+#editor.standard{
+  color: #000;
+  background-color: #fff;
+}
+#editor.dark{
+  color: #fff;
+  background-color: #1e1e1e;
+}
+
 header{
   position: fixed;
   top: 0;

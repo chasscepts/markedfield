@@ -24,11 +24,12 @@ markdown.setOptions({
 });
 
 (function(){
-  let editor, display, fileBrowser, isFileBrowserOpen = false;
+  let editor, display, editorTheme, fileBrowser, isFileBrowserOpen = false;
 
   const fileFilter = { extensions: /\.md/ };
 
   const main = () => {
+    editorTheme = preferences.editorTheme || 'standard'
     editor = document.querySelector('#editor');
     display = document.querySelector('#display');
     fileBrowser = document.querySelector('#file-browser');
@@ -108,6 +109,7 @@ markdown.setOptions({
   }
 
   const setupEditor = () => {
+    editor.className = editorTheme;
     editor.addEventListener('input', refreshDisplay);
     editor.addEventListener('keydown', e => {
       if(e.key == 'Tab'){
@@ -115,6 +117,8 @@ markdown.setOptions({
         addTab();
       }
     });
+
+
   }
 
   const setupFileBrowser = () => {
@@ -231,6 +235,20 @@ markdown.setOptions({
           { role: 'togglefullscreen' }
         ]
       },
+      // { label: Editor}
+      {
+        label: 'Editor',
+        submenu: [
+          {
+            label: 'Themes',
+            submenu: [
+              {label: 'Standard', type: 'radio', click: changeTheme, checked: editorTheme === 'standard'},
+              {label: 'Dark', type: 'radio', click: changeTheme, checked: editorTheme === 'dark'},
+            ]
+          }
+        ]
+      }
+      ,
       // { role: 'windowMenu' }
       {
         label: 'Window',
@@ -251,6 +269,19 @@ markdown.setOptions({
 
     const menu = Menu.buildFromTemplate(template)
     Menu.setApplicationMenu(menu)
+  }
+
+  const changeTheme = (e) => {
+    let className = 'standard'
+    switch(e.label){
+      case 'Dark':
+        className = 'dark';
+        break;
+    }
+
+    editor.className = className;
+    preferences.editorTheme = className;
+    preferences.save().catch(err => logger.error(err));
   }
 
   const createNew = () => {
