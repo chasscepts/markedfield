@@ -56,6 +56,9 @@ main.resizing .main-resize-wrap{
   padding-right: 3px;
 }
 #display{
+  height: 100%;
+  width: 100%;
+  overflow: auto;
   padding: 20px;
   border: 1px solid #e8ecef;
   border-radius: 3px;
@@ -65,8 +68,6 @@ main.resizing .main-resize-wrap{
   flex: 1;
   height: 100%;
   padding-left: 3px;
-  height: 100%;
-  overflow: auto;
 }
 
 #editor.standard{
