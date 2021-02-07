@@ -106,6 +106,8 @@ markdown.setOptions({
 
   const setupEditor = () => {
     editor.className = editorTheme;
+    preferences.editorSpellCheckOn = preferences.editorSpellCheckOn? true : false;
+    editor.setAttribute('spellcheck', preferences.editorSpellCheckOn);
     editor.addEventListener('input', refreshDisplay);
     editor.addEventListener('keydown', e => {
       if(e.key == 'Tab'){
@@ -238,10 +240,11 @@ markdown.setOptions({
           {
             label: 'Themes',
             submenu: [
-              {label: 'Standard', type: 'radio', click: changeTheme, checked: editorTheme === 'standard'},
-              {label: 'Dark', type: 'radio', click: changeTheme, checked: editorTheme === 'dark'},
+              {label: 'Standard', type: 'radio', click: changeEditorTheme, checked: editorTheme === 'standard'},
+              {label: 'Dark', type: 'radio', click: changeEditorTheme, checked: editorTheme === 'dark'},
             ]
-          }
+          },
+          { label: 'Spell Check', type: 'checkbox', click: toggleEditorSpellCheck, checked: preferences.editorSpellCheckOn}
         ]
       }
       ,
@@ -272,13 +275,13 @@ markdown.setOptions({
   }
 
   const clearEditor = () => {
-    editor.innerHTML = '';
+    editor.value = '';
     display.innerHTML = '';
   }
 
-  const changeTheme = (e) => {
+  const changeEditorTheme = item => {
     let className = 'standard'
-    switch(e.label){
+    switch(item.label){
       case 'Dark':
         className = 'dark';
         break;
@@ -286,7 +289,15 @@ markdown.setOptions({
 
     editor.className = className;
     preferences.editorTheme = className;
-    preferences.save().catch(err => logger.error(err));
+  }
+
+  const toggleEditorSpellCheck = item => {
+    preferences.editorSpellCheckOn = item.checked;
+    editor.setAttribute('spellcheck', preferences.editorSpellCheckOn);
+    const content = editor.value;
+    clearEditor();
+    editor.value = content;
+    refreshDisplay();
   }
 
   const createNew = () => {
@@ -315,7 +326,6 @@ markdown.setOptions({
     addFileTreeBranch(tree);
     if(save){
       preferences.currentDirectory = dir;
-      preferences.save();
     }
     if(selected){
       selected.click();
@@ -398,7 +408,6 @@ markdown.setOptions({
     let { dir } = path.parse(file);
     preferences.currentDirectory = dir;
     preferences.currentFile = file;
-    preferences.save();
     if(save()){
       openFolder(preferences.currentDirectory, false);
     }
@@ -437,7 +446,6 @@ markdown.setOptions({
       editor.value = content;
       refreshDisplay();
       preferences.currentFile = path;
-      preferences.save();
     }
     catch(err){
       dialog.showMessageBox(null, { type: 'error', buttons: ['Cancel'], message: 'There was an error reading from the specified path. Pleae check if file still exists.'});
@@ -498,6 +506,8 @@ markdown.setOptions({
     parentNode.append(branchPanel);
   }
 
-  //document.addEventListener('DOMContentLoaded', main);
+  window.onunload = () => {
+    preferences.save().catch(err => logger.error(err));
+  }
   main();
 })();
