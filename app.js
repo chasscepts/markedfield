@@ -104,10 +104,6 @@ markdown.setOptions({
     }
   }
 
-  const refreshDisplay = () => {
-    display.innerHTML = markdown(editor.value);
-  }
-
   const setupEditor = () => {
     editor.className = editorTheme;
     editor.addEventListener('input', refreshDisplay);
@@ -270,6 +266,15 @@ markdown.setOptions({
     const menu = Menu.buildFromTemplate(template)
     Menu.setApplicationMenu(menu)
   }
+  
+  const refreshDisplay = () => {
+    display.innerHTML = markdown(editor.value);
+  }
+
+  const clearEditor = () => {
+    editor.innerHTML = '';
+    display.innerHTML = '';
+  }
 
   const changeTheme = (e) => {
     let className = 'standard'
@@ -290,8 +295,7 @@ markdown.setOptions({
     let { dir } = path.parse(file);
     preferences.currentDirectory = dir;
     preferences.currentFile = file;
-    editor.value = '';
-    refreshDisplay();
+    clearEditor();
     if(save()){
       openFolder(dir, false);
     }
@@ -305,11 +309,69 @@ markdown.setOptions({
   }
 
   const openFolder = (dir, save = true) => {
+    let selected = null, fileFound = false;
+
     const tree = dirTree(dir, fileFilter);
     addFileTreeBranch(tree);
     if(save){
       preferences.currentDirectory = dir;
       preferences.save();
+    }
+    if(selected){
+      selected.click();
+    }
+    else{
+      clearEditor();
+    }
+
+    function addFileTreeBranch(branch, parentNode){
+      //  Lets handle only the type we know
+      const type = branch.type;
+      if(!(type === 'file' || type === 'directory')) return;
+      if(!parentNode){
+        parentNode = document.querySelector('#file-browser-body');
+        parentNode.innerHTML = '';
+      }
+
+      const branchPanel = document.createElement('div');
+      branchPanel.className = 'tree-branch-panel';
+      const namePanel = document.createElement('div');
+      namePanel.className = 'name';
+      namePanel.innerHTML = branch.name;
+      branchPanel.append(namePanel);
+      if(type === 'file'){
+        namePanel.classList.add('file');
+        namePanel.onclick = () => {
+          if(selected){
+            selected.classList.remove('selected');
+          }
+          selected = namePanel;
+          selected.classList.add('selected');
+          openFile(branch.path);
+        }
+        if(branch.path === preferences.currentFile){
+          selected = namePanel;
+        }
+      }
+      else{
+        namePanel.classList.add('folder');
+        const panel = document.createElement('div');
+        panel.className = 'children';
+        branch.children.forEach(child => {
+          addFileTreeBranch(child, panel);
+        });
+        branchPanel.appendChild(panel);
+        let height = 0, collapsed = false;
+        namePanel.onclick = () => {
+          if(!height){
+            height = panel.clientHeight + 'px'
+          }
+          collapsed = !collapsed;
+          namePanel.classList.toggle('collapsed');
+          panel.style.height = collapsed? 0 : height;
+        }
+      }
+      parentNode.append(branchPanel);
     }
   }
 
@@ -365,7 +427,7 @@ markdown.setOptions({
     isFileBrowserOpen = true;
   }
 
-  const toggleFileBrowser = (menuItem) => {
+  const toggleFileBrowser = () => {
     isFileBrowserOpen? closeFileBrowser() : openFileBrowser();
   }
 

@@ -215,6 +215,10 @@ header:hover .hamburger{
 .tree-branch-panel .name.file{
   padding-left: 30px;
 }
+.tree-branch-panel .name.file.selected{
+  background-color: #4e5b6b;
+  color: #fff;
+}
 .tree-branch-panel .name::before{
   position: absolute;
   left: 2px;
