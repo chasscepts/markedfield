@@ -2,7 +2,7 @@
 
 # Marked Field
 
-> An Exclusive Desktop Blog App. Registered users can contribute articles on a range of topics and can also read and vote for other users' articles.
+> A Markdown Editor. It uses electron.js for graphical User Interface and [Marked](https://github.com/markedjs/marked) for parsing markdown.
 
 ![screenshot](screenshot.jpg)
 
