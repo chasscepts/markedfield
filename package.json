@@ -17,7 +17,7 @@
     "Mark Down Editor"
   ],
   "author": "Francis",
-  "license": "CC0-1.0",
+  "license": "MIT",
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.54",
     "@electron-forge/maker-deb": "^6.0.0-beta.54",
