@@ -2,9 +2,9 @@
 
 # Marked Field
 
-> A Markdown Editor. It uses electron.js for graphical User Interface and [Marked](https://github.com/markedjs/marked) for parsing markdown.
+A Markdown Editor with a split view for editing the markdown and previewing the HTML. Changes to markdown are automatically reflected in a preview window. For parsing markdown, Marked Field uses [Marked](https://github.com/markedjs/marked). It is a standalone application that uses Electron for the UI.
 
-![screenshot](screenshot.jpg)
+![screenshot](screenshot.png)
 
 ## Built With
 
@@ -13,25 +13,41 @@
 - HTML
 - CSS
 
-## Getting Started
+## Instructions
 
-To get a local copy up and running follow these simple example steps.
+``` bash
 
-### Clone the project from it's github repo.
+# Clone the repo from [github](https://github.com/chasscepts/markedfield.git)
+
+$ git clone https://github.com/chasscepts/markedfield.git
+
+$ cd markedfield
+
+# install npm dependencies
+
+$ npm install
+
+# Build App
+
+$ npm run make
+
+# The package for your system is now available in out/make directory
 
 ```
 
-  $ git clone https://github.com/chasscepts/markedfield.git
+## Requirements
 
-```
+The project uses [Electron Forge](https://github.com/electron-userland/electron-forge) for packaging. If you are running make for a debian distribution, it requires that you install the following packages - dpkg, fakeroot and rpm.
 
-### cd into the project directory
+``` bash
 
-```
-  $ cd markedfield
+# fakeroot
 
-  # install npm dependencies
-  $ npm install
+$ sudo apt install fakeroot
+
+# rpm
+
+$ sudo apt install rpm
 
 ```
 
@@ -57,4 +73,4 @@ Give a ⭐️ if you like this project!
 
 ## 📝 License
 
-This project is [MIT](./LICENSE)
+This project is [MIT](./LICENSE) licensed
